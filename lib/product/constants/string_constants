@@ -1,0 +1,7 @@
+class AppStrings {
+  static const String appName = 'Flutter Starter';
+  static const String appVersion = '1.0.0';
+  static const String kaydet = 'Kaydet';
+  static const String zikirlerim = 'Zikirlerim';
+  static const String akıllızikirmatik = 'Akıllı Zikirmatik';
+}
