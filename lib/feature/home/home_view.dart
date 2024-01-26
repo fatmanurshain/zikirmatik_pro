@@ -38,6 +38,7 @@ class _HomeViewState extends State<HomeView> {
 
     await Navigator.push(
       context,
+      // ignore: inference_failure_on_instance_creation
       MaterialPageRoute(
         builder: (context) => SavedCountersView(),
       ),
@@ -120,12 +121,13 @@ class _HomeViewState extends State<HomeView> {
                   onPressed: () {
                     Navigator.push(
                       context,
+                      // ignore: inference_failure_on_instance_creation
                       MaterialPageRoute(
                         builder: (context) => SavedCountersView(),
                       ),
                     );
                   },
-                  child: Text('Zikirlerim'),
+                  child: Text('Zikirlerim Push test'),
                 ),
               ],
             ),
