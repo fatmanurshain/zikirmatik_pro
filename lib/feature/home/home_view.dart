@@ -3,7 +3,10 @@ import 'package:zikirmatik/feature/saved_counter/saved_counters_view.dart';
 import 'package:zikirmatik/product/models/counter_database_helper.dart';
 
 class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _HomeViewState createState() => _HomeViewState();
 }
 
@@ -31,11 +34,12 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  void saveCounter() async {
+  Future<void> saveCounter() async {
     CounterDatabaseHelper dbHelper = CounterDatabaseHelper();
-    await dbHelper.initializeDatabase(); // Veritabanını başlatmayı unutmayın
-    await dbHelper.insertZikir(counter);
+    await dbHelper.initializeDatabase();
+    await dbHelper.insertZikir(counter, DateTime.now().toString());
 
+    // ignore: use_build_context_synchronously
     await Navigator.push(
       context,
       // ignore: inference_failure_on_instance_creation
@@ -49,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Akıllı Zikirmatik'),
+        title: const Text('Akıllı Zikirmatik'),
       ),
       body: Center(
         child: Column(
@@ -57,32 +61,32 @@ class _HomeViewState extends State<HomeView> {
           children: [
             // Zikirmatik Tasarımı
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black, width: 2.0),
                 borderRadius: BorderRadius.circular(12.0),
               ),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Akıllı Zikirmatik',
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
 
                   // Led Ekran
                   Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black, width: 1.0),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Text(
                       '$counter',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -90,7 +94,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
 
                   // Increment and Decrement Buttons
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -98,25 +102,66 @@ class _HomeViewState extends State<HomeView> {
                         onPressed: incrementCounter,
                         child: Text('+'),
                       ),
-                      SizedBox(width: 20.0),
+                      const SizedBox(width: 20.0),
                       ElevatedButton(
                         onPressed: decrementCounter,
-                        child: Text('-'),
+                        child: const Text('-'),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Kaydet'),
+                  onPressed: () async {
+                    TextEditingController titleController =
+                        TextEditingController();
+                    TextEditingController contentController =
+                        TextEditingController();
+
+                    await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Listeye Kaydet'),
+                        content: Column(
+                          children: [
+                            TextField(
+                              controller: titleController,
+                              decoration: InputDecoration(labelText: 'İsim'),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              int insertedId = await _dbHelper.insertZikir(
+                                counter,
+                                titleController.text,
+                              );
+                              Navigator.pop(context);
+                              print('Inserted Zikir ID: $insertedId');
+                              // ignore: use_build_context_synchronously
+                              Navigator.push(
+                                context,
+                                // ignore: inference_failure_on_instance_creation
+                                MaterialPageRoute(
+                                  builder: (context) => SavedCountersView(),
+                                ),
+                              );
+                            },
+                            child: const Text('Kaydet'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: const Text('Kaydet'),
                 ),
-                SizedBox(width: 20.0),
+                const SizedBox(width: 20.0),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -127,7 +172,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     );
                   },
-                  child: Text('Zikirlerim Push test'),
+                  child: const Text('Zikirlerim'),
                 ),
               ],
             ),
